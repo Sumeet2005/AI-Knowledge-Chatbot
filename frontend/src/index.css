@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Outfit", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  
+  --color-workspace-bg-dark: #08090d;
+  --color-workspace-bg-light: #fafbfc;
+  
+  --color-sidebar-bg-dark: #0c0d12;
+  --color-sidebar-bg-light: #f1f5f9;
+  
+  --color-card-bg-dark: #12151e;
+  --color-card-bg-light: #ffffff;
+  
+  --color-border-dark: #1f2433;
+  --color-border-light: #e2e8f0;
+  
+  --color-active-nav-dark: #1e2230;
+  --color-active-nav-light: #e2e8f0;
+  
+  --color-accent-teal: #06b6d4;
+  --color-accent-emerald: #10b981;
+
+  --animate-shine-sweep: shine-sweep 2.2s infinite ease-in-out;
+  --animate-glow-breath: glow-breath 8s infinite ease-in-out;
+  --animate-cursor-blink: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: currentColor }
+}
+
+@keyframes shine-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes glow-breath {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes grid-move-slow {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0, 60px, 0); }
+}
+
+.grid-move-slow {
+  animation: grid-move-slow 120s linear infinite;
+}
+
+@keyframes spin-extremely-slow {
+  0% { transform: translate3d(-50%, calc(-50% + var(--scroll-y, 0px)), 0) rotate(0deg); }
+  100% { transform: translate3d(-50%, calc(-50% + var(--scroll-y, 0px)), 0) rotate(360deg); }
+}
+
+.animate-spin-extremely-slow {
+  animation: spin-extremely-slow 180s linear infinite;
+}
+
+@keyframes spin-extremely-slow-reverse {
+  0% { transform: translate3d(-50%, calc(-50% + var(--scroll-y, 0px)), 0) rotate(0deg); }
+  100% { transform: translate3d(-50%, calc(-50% + var(--scroll-y, 0px)), 0) rotate(-360deg); }
+}
+
+.animate-spin-extremely-slow-reverse {
+  animation: spin-extremely-slow-reverse 240s linear infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.noise-bg {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Base styles and defaults */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+/* Custom Scrollbar styling for Enterprise SaaS look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Grid background pattern */
+.grid-bg-dark {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+}
+
+.grid-bg-light {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.01) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.01) 1px, transparent 1px);
+}

@@ -1,0 +1,38 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+*.env
+
+# Backend env
+backend/.env
+
+# Test files
+backend/test_gemini.py
+
+# Database
+*.db
+
+# Logs
+logs/
+*.log
+backend/logs/
+
+# Uploads
+uploads/
+backend/uploads/
+
+# Chroma
+chroma_db/
+backend/chroma_db/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
