@@ -40,6 +40,21 @@ class Message(Base):
         nullable=False,
     )
 
+    rag_debug: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    @property
+    def rag_debug_dict(self) -> dict | None:
+        import json
+        if self.rag_debug:
+            try:
+                return json.loads(self.rag_debug)
+            except Exception:
+                return None
+        return None
+
     conversation = relationship(
         "Conversation",
         back_populates="messages",

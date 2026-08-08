@@ -17,8 +17,8 @@ class ChatService:
     def __init__(self, db: Session | None = None):
         self.db = db
         self.router = QueryRouter()
-        self.rag_service = RAGService()
-        self.gemini = GeminiService()
+        self.rag_service = RAGService(db)
+        self.gemini = GeminiService(db)
         self.metadata_service = MetadataService(db) if db is not None else None
 
     def chat(
@@ -29,8 +29,12 @@ class ChatService:
         Execute the full chat workflow based on the detected intent.
         """
 
+        from app.config import record_stage
+
         start_time = time.perf_counter()
+        t0 = time.perf_counter()
         intent = self.router.classify(question)
+        record_stage("query_classification", (time.perf_counter() - t0) * 1000.0)
         print(f"RAG_AUDIT: [1] QueryRouter intent classification: {intent}", flush=True)
         print(f"RAG_AUDIT: [2] Query classification result: {intent}", flush=True)
         retriever_called = (intent not in ("metadata", "general"))

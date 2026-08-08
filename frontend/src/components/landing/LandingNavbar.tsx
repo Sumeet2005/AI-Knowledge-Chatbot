@@ -31,7 +31,7 @@ export const LandingNavbar = () => {
       </div>
 
       {/* Column 2: Navigation center items - mathematically centered */}
-      <div className="hidden md:flex items-center gap-[44px] text-xs font-bold text-slate-505 dark:text-slate-450 justify-center">
+      <div className="hidden md:flex items-center gap-[44px] text-xs font-bold text-slate-500 dark:text-slate-400 justify-center">
         <a href="#pipeline" className="relative hover:text-slate-950 dark:hover:text-white transition-colors duration-250 py-1 group">
           Pipeline
           <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-cyan-500 group-hover:w-full transition-all duration-300 rounded-full" />

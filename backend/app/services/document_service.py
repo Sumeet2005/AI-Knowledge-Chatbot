@@ -33,6 +33,20 @@ class DocumentService:
                 detail="Document not found.",
             )
 
+        # 1. Attempt Chroma chunk deletion first
+        try:
+            from app.ai.vectorstore.vector_store_service import VectorStoreService
+            vs = VectorStoreService()
+            vs.delete_document(document_id)
+        except Exception as e:
+            from app.config import logger
+            logger.error(f"Failed to delete Chroma chunks for document_id={document_id}: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Vector store cleanup failed: {str(e)}. Document was not deleted.",
+            )
+
+        # 2. Only delete local file and SQL record after successful vector cleanup
         file_path = Path(document.file_path)
 
         if file_path.exists():

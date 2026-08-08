@@ -302,7 +302,7 @@ export const WorkspaceMockup = () => {
               </div>
 
               <div className="w-[52px] flex items-center justify-end">
-                <span className="text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 select-none bg-cyan-50/50 dark:bg-cyan-950/20 px-1.5 py-0.5 rounded border border-cyan-150/40 dark:border-cyan-900/30 leading-none">
+                <span className="text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 select-none bg-cyan-50/50 dark:bg-cyan-950/20 px-1.5 py-0.5 rounded border border-cyan-200/40 dark:border-cyan-900/30 leading-none">
                   SSL
                 </span>
               </div>
@@ -321,7 +321,7 @@ export const WorkspaceMockup = () => {
                   </div>
 
                   {/* New Thread Mock Trigger */}
-                  <div className="w-full h-8 rounded-xl border border-slate-250 dark:border-slate-800/80 flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-800 dark:text-slate-300 bg-white/40 dark:bg-[#12151e]/30 hover:bg-white/80 dark:hover:bg-cyan-950/15 cursor-pointer transition-all duration-200 select-none shadow-sm">
+                  <div className="w-full h-8 rounded-xl border border-slate-200 dark:border-slate-800/80 flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-800 dark:text-slate-300 bg-white/40 dark:bg-[#12151e]/30 hover:bg-white/80 dark:hover:bg-cyan-950/15 cursor-pointer transition-all duration-200 select-none shadow-sm">
                     <MessageSquare className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
                     <span className="hidden md:inline">New Thread</span>
                   </div>
@@ -334,10 +334,10 @@ export const WorkspaceMockup = () => {
                         className={`w-full h-7 rounded-xl px-2.5 flex items-center gap-2 text-[10px] font-bold cursor-pointer transition-all duration-200 ${
                           thread.active 
                             ? 'bg-white/85 dark:bg-cyan-950/15 border border-slate-200 dark:border-cyan-900/20 text-slate-950 dark:text-white shadow-sm' 
-                            : 'text-slate-450 dark:text-slate-450 hover:bg-slate-100/50 dark:hover:bg-slate-900/20'
+                            : 'text-slate-400 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-900/20'
                         }`}
                       >
-                        <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${thread.active ? 'text-cyan-500' : 'text-slate-450'}`} />
+                        <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${thread.active ? 'text-cyan-500' : 'text-slate-400'}`} />
                         <span className="hidden md:inline truncate">{thread.title}</span>
                       </div>
                     ))}
@@ -352,7 +352,7 @@ export const WorkspaceMockup = () => {
                     {documentsList.map((doc, idx) => (
                       <div 
                         key={idx}
-                        className="flex items-center justify-between text-[9px] font-bold text-slate-550 dark:text-slate-400 hover:text-cyan-400 transition-colors duration-200 cursor-pointer py-0.5 px-1 truncate"
+                        className="flex items-center justify-between text-[9px] font-bold text-slate-500 dark:text-slate-400 hover:text-cyan-400 transition-colors duration-200 cursor-pointer py-0.5 px-1 truncate"
                       >
                         <span className="truncate">{doc.name}</span>
                         <span className="text-[7.5px] text-slate-400 dark:text-slate-500 font-medium shrink-0 ml-1">{doc.size}</span>
@@ -404,7 +404,7 @@ export const WorkspaceMockup = () => {
                             <span className="inline-block w-1 h-3 ml-0.5 bg-cyan-500 animate-pulse shrink-0" />
                           )}
                         </div>
-                        <div className="w-6 h-6 rounded-lg bg-slate-150 dark:bg-slate-900 border border-slate-250 dark:border-slate-850 flex items-center justify-center text-slate-400 dark:text-slate-350 shrink-0">
+                        <div className="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 flex items-center justify-center text-slate-400 dark:text-slate-300 shrink-0">
                           <User className="w-3 h-3" />
                         </div>
                       </div>
@@ -454,7 +454,7 @@ export const WorkspaceMockup = () => {
                               <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="flex items-center gap-1 px-2 py-0.5 rounded border border-cyan-150/40 dark:border-cyan-900/25 bg-cyan-50/50 dark:bg-cyan-950/15 text-[8px] font-extrabold text-cyan-600 dark:text-cyan-400 w-fit mt-2.5 cursor-pointer shadow-[0_1px_3px_rgba(6,182,212,0.05)] hover:border-cyan-400 hover:shadow-md transition-all duration-200"
+                                className="flex items-center gap-1 px-2 py-0.5 rounded border border-cyan-200/40 dark:border-cyan-900/25 bg-cyan-50/50 dark:bg-cyan-950/15 text-[8px] font-extrabold text-cyan-600 dark:text-cyan-400 w-fit mt-2.5 cursor-pointer shadow-[0_1px_3px_rgba(6,182,212,0.05)] hover:border-cyan-400 hover:shadow-md transition-all duration-200"
                               >
                                 <BookOpen className="w-2.5 h-2.5" />
                                 <span>citation_framework.pdf [Chunk 2]</span>
@@ -475,7 +475,7 @@ export const WorkspaceMockup = () => {
                                   <CheckCircle2 className="w-2.5 h-2.5 text-cyan-400" />
                                   citation_framework.pdf
                                 </span>
-                                <div className="flex items-center justify-between text-[7px] text-slate-450 dark:text-slate-500 font-bold uppercase mt-1">
+                                <div className="flex items-center justify-between text-[7px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-1">
                                   <span className="flex items-center gap-0.5"><Clock className="w-2 h-2 text-cyan-500" /> 24ms</span>
                                   <span className="flex items-center gap-0.5 text-cyan-500"><ShieldCheck className="w-2 h-2" /> 99.4%</span>
                                 </div>
@@ -491,7 +491,7 @@ export const WorkspaceMockup = () => {
                                   <CheckCircle2 className="w-2.5 h-2.5 text-cyan-400" />
                                   system_architecture.md
                                 </span>
-                                <div className="flex items-center justify-between text-[7px] text-slate-450 dark:text-slate-500 font-bold uppercase mt-1">
+                                <div className="flex items-center justify-between text-[7px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-1">
                                   <span className="flex items-center gap-0.5"><Clock className="w-2 h-2 text-cyan-500" /> 18ms</span>
                                   <span className="flex items-center gap-0.5 text-cyan-500"><ShieldCheck className="w-2 h-2" /> 98.1%</span>
                                 </div>

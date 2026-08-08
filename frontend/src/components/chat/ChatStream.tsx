@@ -143,6 +143,7 @@ export const ChatStream = ({
             response_time_ms={msg.response_time_ms}
             conversation_id={activeThreadId}
             onOpenDrawer={onOpenDrawer}
+            rag_debug={msg.rag_debug}
           />
         ))}
 

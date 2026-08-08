@@ -5,6 +5,7 @@ from app.schemas import (
     ConversationHistoryResponse,
     ConversationSummaryResponse,
     MessageHistoryResponse,
+    SourceResponse,
 )
 from app.services.conversation import ConversationService
 
@@ -67,15 +68,37 @@ class HistoryService:
             conversation_id
         )
 
-        return ConversationHistoryResponse(
-            id=conversation.id,
-            created_at=conversation.created_at,
-            messages=[
+        messages_response = []
+        for message in messages:
+            sources = []
+            rag_debug = message.rag_debug_dict
+            if rag_debug and "chunks" in rag_debug:
+                for chunk in rag_debug["chunks"]:
+                    if chunk.get("final_context"):
+                        sources.append(
+                            SourceResponse(
+                                filename=chunk.get("filename", ""),
+                                original_filename=chunk.get("original_filename"),
+                                chunk_index=chunk.get("chunk_index", 0),
+                                content=chunk.get("content"),
+                                vector_score=chunk.get("vector_score"),
+                                bm25_score=chunk.get("bm25_score"),
+                                rerank_score=chunk.get("rerank_score"),
+                                retrieved_by=chunk.get("retrieved_by"),
+                            )
+                        )
+            messages_response.append(
                 MessageHistoryResponse(
                     role=message.role,
                     content=message.content,
                     created_at=message.created_at,
+                    rag_debug=rag_debug,
+                    sources=sources if sources else None,
                 )
-                for message in messages
-            ],
+            )
+
+        return ConversationHistoryResponse(
+            id=conversation.id,
+            created_at=conversation.created_at,
+            messages=messages_response,
         )

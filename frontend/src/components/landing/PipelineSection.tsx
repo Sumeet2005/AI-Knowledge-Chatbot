@@ -291,7 +291,7 @@ export const PipelineSection = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className={`text-xs font-bold ${
-                      isActive ? 'text-cyan-500 dark:text-cyan-400' : 'text-slate-700 dark:text-slate-350'
+                      isActive ? 'text-cyan-500 dark:text-cyan-400' : 'text-slate-700 dark:text-slate-300'
                     }`}>
                       {stage.title}
                     </span>
@@ -323,14 +323,14 @@ export const PipelineSection = () => {
               <div className="w-full md:w-[60%] flex flex-col gap-3 justify-between">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2 select-none">
-                    <span className="text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 px-2.5 py-0.5 rounded border border-cyan-150/40 dark:border-cyan-900/30">
+                    <span className="text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 px-2.5 py-0.5 rounded border border-cyan-200/40 dark:border-cyan-900/30">
                       STAGE 0{activeNode.id} / 08
                     </span>
                   </div>
                   <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                     {activeNode.title}
                   </h3>
-                  <p className="text-xs md:text-sm text-slate-650 dark:text-slate-400 leading-relaxed font-medium mt-1">
+                  <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-1">
                     {activeNode.description}
                   </p>
                 </div>

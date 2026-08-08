@@ -57,6 +57,7 @@ class ConversationService:
         self,
         conversation_id: int,
         content: str,
+        rag_debug: str | None = None,
     ) -> Message:
         """
         Save an assistant message.
@@ -66,6 +67,7 @@ class ConversationService:
             conversation_id=conversation_id,
             role="assistant",
             content=content,
+            rag_debug=rag_debug,
         )
 
     def get_messages(

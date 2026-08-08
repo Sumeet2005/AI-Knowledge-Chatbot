@@ -22,6 +22,11 @@ class ChatRequest(BaseModel):
         description="Existing conversation ID. Leave null to start a new conversation.",
     )
 
+    stream: Optional[bool] = Field(
+        default=False,
+        description="Whether to stream real-time RAG pipeline status updates.",
+    )
+
 
 class ChatResponse(BaseModel):
     """
@@ -51,4 +56,9 @@ class ChatResponse(BaseModel):
     response_time_ms: float = Field(
         ...,
         description="Response time in milliseconds.",
+    )
+
+    rag_debug: Optional[dict] = Field(
+        default=None,
+        description="RAG Pipeline Debug and Explainability information.",
     )

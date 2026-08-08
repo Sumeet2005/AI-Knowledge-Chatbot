@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LayoutGrid, FileText, Plus, Sun, Moon, Pencil, Trash2 } from 'lucide-react';
+import { LayoutGrid, FileText, Plus, Sun, Moon, Pencil, Trash2, Server } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useChat } from '../../context/ChatContext';
 import { IndexStatusCard } from './IndexStatusCard';
 
-export const Sidebar = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   const { theme, toggleTheme } = useTheme();
   const { 
     conversations, 
@@ -25,6 +30,8 @@ export const Sidebar = () => {
 
   const isWorkspaceActive = location.pathname === '/workspace' || location.pathname === '/chat';
   const isDocumentsActive = location.pathname === '/documents';
+  const isAdminActive = location.pathname === '/admin';
+  const isSettingsActive = location.pathname === '/settings';
 
   const handleWorkspaceClick = () => {
     navigate('/workspace');
@@ -34,13 +41,32 @@ export const Sidebar = () => {
     navigate('/documents');
   };
 
+  const handleAdminClick = () => {
+    navigate('/admin');
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
+  };
+
   const handleNewThread = () => {
     startNewThread();
     navigate('/workspace');
   };
 
   return (
-    <aside className="w-[280px] h-full flex flex-col border border-border-light/50 dark:border-border-dark/40 bg-sidebar-bg-light/45 dark:bg-sidebar-bg-dark/65 backdrop-blur-2xl text-slate-900/70 dark:text-white/70 font-sans transition-all duration-300 rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.03)] dark:shadow-[0_20px_48px_rgba(0,0,0,0.55)] select-none z-10">
+    <>
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isOpen && (
+        <div 
+          onClick={onClose}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-45 md:hidden"
+        />
+      )}
+      <aside className={`w-[280px] h-full flex flex-col border border-border-light/50 dark:border-border-dark/40 bg-sidebar-bg-light/80 dark:bg-sidebar-bg-dark/95 md:bg-sidebar-bg-light/45 md:dark:bg-sidebar-bg-dark/65 backdrop-blur-2xl text-slate-900/70 dark:text-white/70 font-sans transition-all duration-300 rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.03)] dark:shadow-[0_20px_48px_rgba(0,0,0,0.55)] select-none z-50 md:z-10
+        fixed inset-y-6 left-6 h-[calc(100vh-48px)] transform transition-transform duration-300 ease-out md:static md:translate-x-0 md:h-full
+        ${isOpen ? 'translate-x-0' : '-translate-x-[320px] md:translate-x-0'}
+      `}>
       
       {/* Workspace Header */}
       <div className="p-5 flex items-center gap-3 select-none">
@@ -96,7 +122,7 @@ export const Sidebar = () => {
           aria-label="Go to documents management"
           className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer hover:pl-5 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:ring-offset-1 outline-none ${
             isDocumentsActive
-              ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-955 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
+              ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-950 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
               : 'hover:bg-card-bg-light/40 dark:hover:bg-card-bg-dark/40 text-slate-500 dark:text-slate-400 border border-transparent'
           }`}
         >
@@ -109,6 +135,36 @@ export const Sidebar = () => {
               {documents.length}
             </span>
           )}
+        </button>
+
+        <button
+          onClick={handleAdminClick}
+          aria-label="Go to admin dashboard"
+          className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer hover:pl-5 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:ring-offset-1 outline-none ${
+            isAdminActive
+              ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-950 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
+              : 'hover:bg-card-bg-light/40 dark:hover:bg-card-bg-dark/40 text-slate-500 dark:text-slate-400 border border-transparent'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <Server className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            Admin Dashboard
+          </div>
+        </button>
+
+        <button
+          onClick={handleSettingsClick}
+          aria-label="Go to settings"
+          className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer hover:pl-5 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:ring-offset-1 outline-none ${
+            isSettingsActive
+              ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-950 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
+              : 'hover:bg-card-bg-light/40 dark:hover:bg-card-bg-dark/40 text-slate-500 dark:text-slate-400 border border-transparent'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            Settings
+          </div>
         </button>
       </div>
 
@@ -161,7 +217,7 @@ export const Sidebar = () => {
                         }}
                         className={`w-full text-left text-xs px-3.5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer truncate pr-14 hover:pl-5 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:ring-offset-1 outline-none ${
                           isActive
-                            ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-955 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
+                            ? 'bg-card-bg-light/90 dark:bg-active-nav-dark text-slate-950 dark:text-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] border border-border-light/20 dark:border-border-dark/30'
                             : 'hover:bg-card-bg-light/40 dark:hover:bg-card-bg-dark/40 text-slate-500 dark:text-slate-400 border border-transparent'
                         }`}
                       >
@@ -226,5 +282,6 @@ export const Sidebar = () => {
       </div>
 
     </aside>
+   </>
   );
 };

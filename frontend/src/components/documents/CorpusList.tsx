@@ -68,7 +68,7 @@ export const CorpusList = ({ searchQuery, filterType }: CorpusListProps) => {
       {/* Empty State: Empty Corpus */}
       {documents.length === 0 ? (
         <div className="border border-dashed border-border-light dark:border-border-dark rounded-2xl p-10 text-center text-slate-400 dark:text-slate-600 bg-card-bg-light/10 dark:bg-card-bg-dark/10 flex flex-col items-center justify-center gap-3">
-          <Inbox className="w-8 h-8 text-slate-350 dark:text-slate-750" />
+          <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-750" />
           <div className="flex flex-col gap-1">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-400">Empty corpus</span>
             <span className="text-[11px]">No documents indexed yet. Upload files above to ground your workspace.</span>
@@ -77,7 +77,7 @@ export const CorpusList = ({ searchQuery, filterType }: CorpusListProps) => {
       ) : /* Empty State: No search matches */
       filteredDocuments.length === 0 ? (
         <div className="border border-dashed border-border-light dark:border-border-dark rounded-2xl p-10 text-center text-slate-400 dark:text-slate-600 bg-card-bg-light/10 dark:bg-card-bg-dark/10 flex flex-col items-center justify-center gap-2">
-          <Inbox className="w-7 h-7 text-slate-350 dark:text-slate-750" />
+          <Inbox className="w-7 h-7 text-slate-300 dark:text-slate-750" />
           <div className="flex flex-col gap-0.5">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-400">No search matches</span>
             <span className="text-[11px]">Try adjusting your query or extension filters.</span>
@@ -87,7 +87,7 @@ export const CorpusList = ({ searchQuery, filterType }: CorpusListProps) => {
         /* List Items */
         <div className="flex flex-col gap-2.5">
           {filteredDocuments.map((doc) => {
-            const chunkCount = getChunkCount(doc.original_filename, doc.file_size);
+            const chunkCount = doc.chunk_count !== undefined && doc.chunk_count !== null ? doc.chunk_count : getChunkCount(doc.original_filename, doc.file_size);
             const isDeleting = deletingId === doc.id;
             
             return (
@@ -103,18 +103,32 @@ export const CorpusList = ({ searchQuery, filterType }: CorpusListProps) => {
                     <span className="text-xs font-bold text-slate-900 dark:text-white truncate leading-tight mb-1 pr-4">
                       {doc.original_filename}
                     </span>
-                    <span className="text-[9px] font-mono text-slate-550 dark:text-slate-500 leading-none">
+                    <span className="text-[9px] font-mono text-slate-500 dark:text-slate-500 leading-none">
                       {formatBytes(doc.file_size)} • {chunkCount} {chunkCount === 1 ? 'chunk' : 'chunks'} • {formatDate(doc.uploaded_at)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0 pl-2 select-none">
-                  {/* Ready Status Badge */}
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100/40 dark:border-emerald-900/30">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    READY
-                  </div>
+                  {/* Dynamic Status Badge */}
+                  {doc.status === 'PROCESSING' && (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 border border-amber-100/40 dark:border-amber-900/30">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+                      PROCESSING
+                    </div>
+                  )}
+                  {doc.status === 'FAILED' && (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border border-red-100/40 dark:border-red-900/30">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+                      FAILED
+                    </div>
+                  )}
+                  {(doc.status === 'READY' || !doc.status) && (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100/40 dark:border-emerald-900/30">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                      READY
+                    </div>
+                  )}
 
                   {/* Delete Button */}
                   <button

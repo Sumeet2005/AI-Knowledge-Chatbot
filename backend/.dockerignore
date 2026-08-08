@@ -1,0 +1,9 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+chroma_db/
+uploads/
+knowledge_chatbot.db
+*.log

@@ -111,7 +111,7 @@ export const TechStack = () => {
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-800 group-hover:bg-cyan-500 transition-colors duration-150" />
                         {item.name}
                       </span>
-                      <p className="text-[10.5px] text-slate-500 dark:text-slate-450 leading-relaxed pl-3.5">
+                      <p className="text-[10.5px] text-slate-500 dark:text-slate-400 leading-relaxed pl-3.5">
                         {item.desc}
                       </p>
                     </div>

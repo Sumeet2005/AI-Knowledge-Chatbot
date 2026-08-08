@@ -9,6 +9,8 @@ import { Toaster } from 'react-hot-toast';
 
 // Lazy load flagship Landing page to isolate bundle dependencies from main Workspace
 const LandingView = lazy(() => import('./views/LandingView'));
+const AdminDashboard = lazy(() => import('./views/AdminDashboard'));
+const Settings = lazy(() => import('./views/Settings'));
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
                 <Route path="/workspace" element={<WorkspaceView />} />
                 <Route path="/chat" element={<WorkspaceView />} />
                 <Route path="/documents" element={<DocumentsView />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
 
               {/* Redirect unmatched links to Landing Page */}

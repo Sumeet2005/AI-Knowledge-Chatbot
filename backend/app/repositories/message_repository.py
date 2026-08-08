@@ -16,6 +16,7 @@ class MessageRepository:
         conversation_id: int,
         role: str,
         content: str,
+        rag_debug: str | None = None,
     ) -> Message:
         """
         Save a chat message.
@@ -25,6 +26,7 @@ class MessageRepository:
             conversation_id=conversation_id,
             role=role,
             content=content,
+            rag_debug=rag_debug,
         )
 
         self.db.add(message)

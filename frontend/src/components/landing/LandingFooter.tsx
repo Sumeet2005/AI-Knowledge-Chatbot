@@ -50,7 +50,7 @@ export const LandingFooter = () => {
           >
             
             {/* Hologram badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-150/40 dark:border-cyan-900/30 w-fit select-none shadow-[0_0_8px_rgba(6,182,212,0.06)]">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200/40 dark:border-cyan-900/30 w-fit select-none shadow-[0_0_8px_rgba(6,182,212,0.06)]">
               <Sparkles className="w-3.5 h-3.5" />
               PREMIUM RAG INSTANCE
             </div>
@@ -109,7 +109,7 @@ export const LandingFooter = () => {
                   Atlas AI
                 </span>
               </div>
-              <p className="text-[10.5px] text-slate-500 dark:text-slate-450 leading-relaxed max-w-[180px]">
+              <p className="text-[10.5px] text-slate-500 dark:text-slate-400 leading-relaxed max-w-[180px]">
                 Grounding enterprise models with conceptual knowledge indexes.
               </p>
             </div>
@@ -119,7 +119,7 @@ export const LandingFooter = () => {
               <span className="font-extrabold text-slate-900 dark:text-white text-[10px] tracking-widest uppercase">
                 Navigation
               </span>
-              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-450">
+              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-400">
                 <a href="#pipeline" className="hover:text-cyan-500 transition-colors duration-150">Pipeline</a>
                 <a href="#features" className="hover:text-cyan-500 transition-colors duration-150">Features</a>
                 <a href="#architecture" className="hover:text-cyan-500 transition-colors duration-150">Architecture</a>
@@ -132,7 +132,7 @@ export const LandingFooter = () => {
               <span className="font-extrabold text-slate-900 dark:text-white text-[10px] tracking-widest uppercase">
                 Resources
               </span>
-              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-450">
+              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-400">
                 <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-500 transition-colors duration-150 flex items-center gap-1">
                   GitHub <ArrowUpRight className="w-2.5 h-2.5" />
                 </a>
@@ -146,7 +146,7 @@ export const LandingFooter = () => {
               <span className="font-extrabold text-slate-900 dark:text-white text-[10px] tracking-widest uppercase">
                 Technologies
               </span>
-              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-450 font-mono">
+              <div className="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                 <span>React 19</span>
                 <span>FastAPI</span>
                 <span>ChromaDB</span>
@@ -158,7 +158,7 @@ export const LandingFooter = () => {
           </div>
 
           {/* Bottom Row Credits */}
-          <div className="border-t border-slate-200/30 dark:border-slate-800/30 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[9.5px] font-bold text-slate-450 dark:text-slate-500 uppercase tracking-wide">
+          <div className="border-t border-slate-200/30 dark:border-slate-800/30 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[9.5px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
             <span>© 2026 Atlas AI. All rights reserved.</span>
             <span>Built with React, FastAPI, and ChromaDB.</span>
           </div>

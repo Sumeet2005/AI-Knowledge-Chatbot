@@ -1,6 +1,9 @@
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.schemas.source import SourceResponse
 
 
 class MessageHistoryResponse(BaseModel):
@@ -13,6 +16,10 @@ class MessageHistoryResponse(BaseModel):
     content: str
 
     created_at: datetime
+
+    rag_debug: Optional[dict] = Field(default=None, validation_alias="rag_debug_dict")
+
+    sources: Optional[list[SourceResponse]] = None
 
     model_config = {
         "from_attributes": True,

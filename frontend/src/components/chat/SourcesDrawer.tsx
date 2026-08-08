@@ -17,7 +17,13 @@ import toast from 'react-hot-toast';
 
 export interface Source {
   filename: string;
+  original_filename?: string;
   chunk_index: number;
+  content?: string;
+  vector_score?: number;
+  bm25_score?: number;
+  rerank_score?: number;
+  retrieved_by?: string;
 }
 
 export interface DrawerMetadata {
@@ -34,16 +40,36 @@ interface SourcesDrawerProps {
   metadata: DrawerMetadata;
 }
 
-// Generate realistic mock text chunks based on document names to create a rich preview experience
-const getMockChunkContent = (filename: string, index: number) => {
-  const name = filename.toLowerCase();
-  if (name.includes('security') || name.includes('policy')) {
-    return `[Chunk #${index}] Section 4.2.1 - Network Access Security Controls:\nAll access to internal database environments must pass through multi-factor authentication (MFA) gateways. The network access control lists (ACLs) are configured to restrict SSH traffic to verified corporate gateway subnets (10.140.0.0/16). Remote terminals session logging is enabled and retained in write-once audit logs for a minimum duration of 180 days.`;
+const renderScores = (src: Source) => {
+  const scoresList: string[] = [];
+  if (src.rerank_score !== undefined && src.rerank_score !== null) {
+    scoresList.push(`Rerank: ${src.rerank_score.toFixed(3)}`);
   }
-  if (name.includes('onboard') || name.includes('engineer') || name.includes('step')) {
-    return `[Chunk #${index}] Engineering Onboarding Guide - Week 1 Workflow:\nDuring your first 3 days, complete the mandatory identity access workspace tasks: (a) Retrieve your GPG and SSH keys and register them in the identity vault; (b) Request developer access to the microservices repository cluster via LDAP group 'dev-core'; (c) Spin up your local testing sandbox using the container orchestration command 'docker-compose -f local.yml up'. Ensure unit tests pass before opening a PR.`;
+  if (src.vector_score !== undefined && src.vector_score !== null) {
+    scoresList.push(`Vector: ${src.vector_score.toFixed(3)}`);
   }
-  return `[Chunk #${index}] Grounded Context Document Chunk:\nThis chunk contains reference content extracted from the indexed document '${filename}' at index offset ${index}. Retrieval score represents the cosine similarity distance mapped to the query embedding. This document is fully chunked, embedded via the text-embedding-ada model, and written to the vector index databases for grounding.`;
+  if (src.bm25_score !== undefined && src.bm25_score !== null) {
+    scoresList.push(`BM25: ${src.bm25_score.toFixed(2)}`);
+  }
+  return scoresList.join(' • ');
+};
+
+const getSourceTypeLabel = (src: Source) => {
+  let label = '';
+  if (src.retrieved_by === 'both') {
+    label = 'Vector + Keyword';
+  } else if (src.retrieved_by === 'vector') {
+    label = 'Vector';
+  } else if (src.retrieved_by === 'keyword') {
+    label = 'Keyword';
+  } else {
+    label = 'Vector'; // Default fallback
+  }
+  
+  if (src.rerank_score !== undefined && src.rerank_score !== null) {
+    label += ' (Reranked)';
+  }
+  return label;
 };
 
 export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDrawerProps) => {
@@ -63,9 +89,10 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleCopyCitation = async (filename: string, chunkIndex: number, text: string) => {
+  const handleCopyCitation = async (originalFilename: string, filename: string, chunkIndex: number, text: string) => {
     const id = `${filename}-${chunkIndex}`;
-    const citationText = `[Source: ${filename}, Chunk #${chunkIndex}]\n"${text}"`;
+    const displayName = originalFilename || filename;
+    const citationText = `[Source: ${displayName}, Chunk #${chunkIndex}]\n"${text}"`;
     try {
       await navigator.clipboard.writeText(citationText);
       setCopiedId(id);
@@ -78,7 +105,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
   };
 
   const handleOpenDoc = (filename: string) => {
-    toast.success(`Opening document "${filename}"...`);
+    window.open(`/api/documents/${encodeURIComponent(filename)}/view`, '_blank');
   };
 
   const toggleExpand = (id: string) => {
@@ -132,7 +159,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
               <button
                 onClick={onClose}
                 aria-label="Close sources inspector"
-                className="p-1.5 rounded-lg border border-border-light/60 dark:border-border-dark/60 hover:border-border-light/80 dark:hover:border-border-dark/80 text-slate-400 dark:text-slate-550 hover:text-slate-900 dark:hover:text-white bg-card-bg-light/40 dark:bg-workspace-bg-dark/20 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-1 text-[9px] font-bold focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 outline-none"
+                className="p-1.5 rounded-lg border border-border-light/60 dark:border-border-dark/60 hover:border-border-light/80 dark:hover:border-border-dark/80 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white bg-card-bg-light/40 dark:bg-workspace-bg-dark/20 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-1 text-[9px] font-bold focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 outline-none"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>ESC</span>
@@ -149,7 +176,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                 </span>
                 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-550 dark:text-slate-400 py-1">
+                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 py-1">
                     <Clock className="w-3.5 h-3.5 text-slate-400" />
                     <span>Latency:</span>
                     <span className="font-bold text-slate-900 dark:text-white">
@@ -157,7 +184,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-slate-550 dark:text-slate-400 py-1">
+                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 py-1">
                     <Database className="w-3.5 h-3.5 text-slate-400" />
                     <span>Retrieved:</span>
                     <span className="font-bold text-slate-900 dark:text-white">
@@ -165,7 +192,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-slate-550 dark:text-slate-400 py-1 col-span-2">
+                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 py-1 col-span-2">
                     <Tag className="w-3.5 h-3.5 text-slate-400" />
                     <span>Thread ID:</span>
                     <span className="font-mono font-bold text-slate-900 dark:text-white truncate">
@@ -173,7 +200,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-slate-550 dark:text-slate-400 py-1 col-span-2">
+                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 py-1 col-span-2">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" />
                     <span>Timestamp:</span>
                     <span className="font-bold text-slate-900 dark:text-white">
@@ -192,12 +219,16 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                 <div className="flex flex-col gap-3">
                   {sources.map((src, index) => {
                     const chunkId = `${src.filename}-${src.chunk_index}`;
-                    const mockText = getMockChunkContent(src.filename, src.chunk_index);
+                    const chunkText = src.content || "No preview content available.";
                     const isExpanded = expandedChunks[chunkId] || false;
                     const isCopied = copiedId === chunkId;
                     
-                    // Cosine similarity calculations
-                    const mockScore = (0.95 - (index * 0.04)).toFixed(2);
+                    const docName = src.original_filename || src.filename;
+                    const pageVal = (src as any).page_number || (src as any).page || (src as any).page_index;
+                    const pageText = pageVal !== undefined && pageVal !== null ? `Page ${pageVal}` : "Page N/A";
+                    
+                    const scoreText = renderScores(src);
+                    const typeLabel = getSourceTypeLabel(src);
 
                     return (
                       <div
@@ -211,28 +242,35 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                               <FileText className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                             </div>
                             <div className="flex flex-col overflow-hidden">
-                              <span className="text-xs font-bold text-slate-900 dark:text-white truncate leading-tight">
-                                {src.filename}
+                              <span className="text-xs font-bold text-slate-900 dark:text-white truncate leading-tight" title={docName}>
+                                {docName}
                               </span>
-                              <span className="text-[9px] font-mono text-slate-500 dark:text-slate-550 mt-0.5 leading-none">
-                                Chunk {src.chunk_index} • Order #{index + 1}
+                              <span className="text-[9px] font-mono text-slate-500 dark:text-slate-500 mt-0.5 leading-none">
+                                Chunk {src.chunk_index} • {pageText} • Order #{index + 1}
                               </span>
                             </div>
                           </div>
 
-                          <span className="text-[8px] font-extrabold text-cyan-650 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/40 px-2 py-0.5 rounded-full border border-cyan-150/40 dark:border-cyan-900/30">
-                            {mockScore} Score
-                          </span>
+                          <div className="flex flex-col items-end gap-1 shrink-0">
+                            <span className="text-[8px] font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/40 px-2 py-0.5 rounded-full border border-cyan-200/40 dark:border-cyan-900/30">
+                              {typeLabel}
+                            </span>
+                            {scoreText && (
+                              <span className="text-[7px] font-mono text-slate-400 dark:text-slate-500 leading-none">
+                                {scoreText}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         {/* Chunk Preview Text Block */}
-                        <div className="relative text-xs leading-relaxed text-slate-650 dark:text-slate-355 p-2.5 bg-card-bg-light/45 dark:bg-workspace-bg-dark/30 border border-border-light/60 dark:border-border-dark/60 rounded-xl overflow-hidden select-text shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
-                          <p className={`font-mono text-[11px] ${isExpanded ? '' : 'line-clamp-3'}`}>
-                            {mockText}
+                        <div className="relative text-xs leading-relaxed text-slate-600 dark:text-slate-300 p-2.5 bg-card-bg-light/45 dark:bg-workspace-bg-dark/30 border border-border-light/60 dark:border-border-dark/60 rounded-xl overflow-hidden select-text shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+                          <p className={`font-mono text-[11px] whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-3'}`}>
+                            {chunkText}
                           </p>
                           <button
                             onClick={() => toggleExpand(chunkId)}
-                            className="mt-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-455 hover:text-slate-800 dark:hover:text-white cursor-pointer flex items-center gap-1 select-none w-fit focus-visible:ring-2 focus-visible:ring-cyan-500/50 outline-none rounded transition-colors duration-150"
+                            className="mt-2.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer flex items-center gap-1 select-none w-fit focus-visible:ring-2 focus-visible:ring-cyan-500/50 outline-none rounded transition-colors duration-150"
                           >
                             {isExpanded ? (
                               <>
@@ -249,8 +287,8 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
                         {/* Source Actions Bar */}
                         <div className="flex items-center gap-2 border-t border-border-light/40 dark:border-border-dark/20 pt-2.5 select-none">
                           <button
-                            onClick={() => handleCopyCitation(src.filename, src.chunk_index, mockText)}
-                            className="flex-1 py-1.5 rounded-xl border border-border-light/60 dark:border-border-dark hover:border-border-light/80 dark:hover:border-border-dark/80 bg-card-bg-light/60 dark:bg-[#000000]/15 text-slate-550 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-[9px] font-extrabold shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500/55 focus-visible:ring-offset-1 outline-none"
+                            onClick={() => handleCopyCitation(src.original_filename || '', src.filename, src.chunk_index, chunkText)}
+                            className="flex-1 py-1.5 rounded-xl border border-border-light/60 dark:border-border-dark hover:border-border-light/80 dark:hover:border-border-dark/80 bg-card-bg-light/60 dark:bg-[#000000]/15 text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-[9px] font-extrabold shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500/55 focus-visible:ring-offset-1 outline-none"
                           >
                             {isCopied ? (
                               <>
@@ -267,7 +305,7 @@ export const SourcesDrawer = ({ isOpen, onClose, sources, metadata }: SourcesDra
 
                           <button
                             onClick={() => handleOpenDoc(src.filename)}
-                            className="p-1.5 rounded-xl border border-border-light/60 dark:border-border-dark hover:border-border-light/80 dark:hover:border-border-dark/80 bg-card-bg-light/60 dark:bg-[#000000]/15 text-slate-550 dark:text-slate-455 hover:text-slate-850 dark:hover:text-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500/55 focus-visible:ring-offset-1 outline-none"
+                            className="p-1.5 rounded-xl border border-border-light/60 dark:border-border-dark hover:border-border-light/80 dark:hover:border-border-dark/80 bg-card-bg-light/60 dark:bg-[#000000]/15 text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500/55 focus-visible:ring-offset-1 outline-none"
                             title="Open source file"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />

@@ -206,7 +206,7 @@ export const DocumentsView = () => {
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-455 shrink-0 select-none">
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 shrink-0 select-none">
                             <span>{formatBytes(item.size)}</span>
                             <span>•</span>
                             <span className={`uppercase ${
@@ -291,7 +291,7 @@ export const DocumentsView = () => {
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 cursor-pointer ${
                     filterType === type
                       ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border-slate-900 dark:border-white shadow-[0_2px_8px_rgba(0,0,0,0.05)]'
-                      : 'bg-white/40 dark:bg-card-bg-dark/20 text-slate-505 dark:text-slate-450 border-slate-200/60 dark:border-border-dark hover:border-slate-350 dark:hover:border-slate-800 hover:bg-white/65 dark:hover:bg-[#12151e]/40'
+                      : 'bg-white/40 dark:bg-card-bg-dark/20 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-border-dark hover:border-slate-300 dark:hover:border-slate-800 hover:bg-white/65 dark:hover:bg-[#12151e]/40'
                   }`}
                 >
                   {type.toUpperCase()}

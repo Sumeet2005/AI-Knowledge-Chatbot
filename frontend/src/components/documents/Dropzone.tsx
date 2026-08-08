@@ -73,7 +73,7 @@ export const Dropzone = ({ onFilesAdded }: DropzoneProps) => {
         Drop documents to index
       </h3>
       
-      <p className="text-xs text-slate-500 dark:text-slate-450 max-w-md leading-relaxed mb-6">
+      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md leading-relaxed mb-6">
         PDF, DOCX and TXT. Each file is chunked, embedded and written to the vector index — answers cite the exact chunk they came from.
       </p>
 
@@ -81,7 +81,7 @@ export const Dropzone = ({ onFilesAdded }: DropzoneProps) => {
         <button
           onClick={onButtonClick}
           disabled={uploading}
-          className="px-5 py-2 text-xs font-bold rounded-full bg-cyan-400 hover:bg-cyan-300 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-slate-955 shadow-[0_2px_10px_rgba(6,182,212,0.25)] hover:shadow-[0_4px_16px_rgba(6,182,212,0.4)] scale-100 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-transparent"
+          className="px-5 py-2 text-xs font-bold rounded-full bg-cyan-400 hover:bg-cyan-300 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-slate-950 shadow-[0_2px_10px_rgba(6,182,212,0.25)] hover:shadow-[0_4px_16px_rgba(6,182,212,0.4)] scale-100 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-transparent"
         >
           Choose files
         </button>

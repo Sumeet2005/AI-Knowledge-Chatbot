@@ -108,7 +108,7 @@ export const FeaturesSection = () => {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08 }}
                     key={idx}
-                    className="flex items-start gap-3 text-xs text-slate-500 dark:text-slate-450"
+                    className="flex items-start gap-3 text-xs text-slate-500 dark:text-slate-400"
                   >
                     <XCircle className="w-4 h-4 text-red-500/80 shrink-0 mt-0.5" />
                     <span>{con}</span>
@@ -194,7 +194,7 @@ export const FeaturesSection = () => {
                     {feature.title}
                   </h4>
                   
-                  <p className="text-[11px] text-slate-500 dark:text-slate-450 leading-relaxed">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </motion.div>

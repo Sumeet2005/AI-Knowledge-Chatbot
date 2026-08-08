@@ -20,7 +20,7 @@ export const IndexStatusCard = () => {
       <div className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
         {totalChunks} <span className="text-xs font-bold text-slate-400 dark:text-slate-500">chunks</span>
       </div>
-      <div className="text-[10px] font-bold text-slate-550 dark:text-slate-455 mt-1 select-none">
+      <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1 select-none">
         {documents.length} docs • {totalSizeFormatted}
       </div>
     </div>

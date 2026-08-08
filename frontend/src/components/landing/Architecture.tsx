@@ -159,7 +159,7 @@ export const Architecture = () => {
                       <span className="text-xs font-bold text-slate-900 dark:text-white leading-none mb-1">
                         {node.name}
                       </span>
-                      <span className="text-[9.5px] font-mono text-slate-450 dark:text-slate-500 uppercase leading-none">
+                      <span className="text-[9.5px] font-mono text-slate-400 dark:text-slate-500 uppercase leading-none">
                         STAGE 0{index + 1}
                       </span>
                     </div>
@@ -206,7 +206,7 @@ export const Architecture = () => {
                       <span className="text-[9.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                         COMPILING TECHNOLOGY
                       </span>
-                      <div className="text-[11px] font-mono text-cyan-650 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 px-2.5 py-1.5 rounded border border-cyan-150/40 dark:border-cyan-900/30">
+                      <div className="text-[11px] font-mono text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 px-2.5 py-1.5 rounded border border-cyan-200/40 dark:border-cyan-900/30">
                         {activeNode.tech}
                       </div>
                     </div>
@@ -215,7 +215,7 @@ export const Architecture = () => {
                       <span className="text-[9.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                         FUNCTIONAL PURPOSE
                       </span>
-                      <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                         {activeNode.purpose}
                       </p>
                     </div>
@@ -224,7 +224,7 @@ export const Architecture = () => {
               </AnimatePresence>
 
               {/* Inspector bottom label status */}
-              <div className="mt-8 border-t border-slate-200/30 dark:border-slate-800/30 pt-4 flex items-center justify-between text-[8px] font-extrabold text-slate-450 dark:text-slate-500 uppercase tracking-wider select-none">
+              <div className="mt-8 border-t border-slate-200/30 dark:border-slate-800/30 pt-4 flex items-center justify-between text-[8px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none">
                 <span>Active Core Segment</span>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

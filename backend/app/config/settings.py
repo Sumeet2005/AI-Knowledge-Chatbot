@@ -18,9 +18,15 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str
     GEMINI_MODEL: str = "gemini-3.5-flash"
 
+    GROQ_API_KEY: str
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    OLLAMA_API_URL: str = "http://localhost:11434"
+
     CHROMA_DB_PATH: str
 
     UPLOAD_FOLDER: str
+
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     LOG_LEVEL: str = "INFO"
 
@@ -40,3 +46,6 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+import contextvars
+chat_telemetry = contextvars.ContextVar("chat_telemetry", default=None)

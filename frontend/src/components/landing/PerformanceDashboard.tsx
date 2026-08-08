@@ -156,7 +156,7 @@ export const PerformanceDashboard = () => {
                   <div className="absolute -right-[20%] -bottom-[20%] w-[100px] h-[100px] rounded-full bg-cyan-500/[0.03] dark:bg-cyan-500/[0.008] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                   {/* Icon & Label row */}
-                  <div className="flex items-center gap-2.5 text-slate-500 dark:text-slate-450 text-[11px] font-extrabold tracking-tight">
+                  <div className="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 text-[11px] font-extrabold tracking-tight">
                     <Icon className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
                     <span>{metric.title}</span>
                   </div>
@@ -175,7 +175,7 @@ export const PerformanceDashboard = () => {
                     )}
                   </div>
 
-                  <p className="text-[10.5px] text-slate-500 dark:text-slate-450 leading-relaxed mt-0.5">
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5">
                     {metric.desc}
                   </p>
                 </motion.div>
@@ -232,7 +232,7 @@ export const PerformanceDashboard = () => {
                 </div>
 
                 {/* Micro checklist tracker */}
-                <div className="flex flex-col gap-2 border-t border-slate-200/20 dark:border-slate-800/20 pt-4 text-[10px] font-semibold text-slate-500 dark:text-slate-450">
+                <div className="flex flex-col gap-2 border-t border-slate-200/20 dark:border-slate-800/20 pt-4 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                   <div className="flex items-center justify-between">
                     <span>1. FastAPI Parser upload</span>
                     <span className={indexProgress >= 25 ? 'text-emerald-500' : 'text-slate-400'}>
@@ -261,7 +261,7 @@ export const PerformanceDashboard = () => {
               </div>
 
               {/* Status footer details */}
-              <div className="border-t border-slate-200/30 dark:border-slate-800/30 pt-4 flex items-center justify-between text-[8px] font-extrabold text-slate-450 dark:text-slate-500 uppercase tracking-wider select-none">
+              <div className="border-t border-slate-200/30 dark:border-slate-800/30 pt-4 flex items-center justify-between text-[8px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none">
                 <span>Simulator Live status</span>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

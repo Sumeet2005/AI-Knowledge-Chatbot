@@ -12,3 +12,6 @@ langchain-text-splitters
 pypdf
 python-docx
 loguru
+reportlab
+python-multipart
+sentence-transformers

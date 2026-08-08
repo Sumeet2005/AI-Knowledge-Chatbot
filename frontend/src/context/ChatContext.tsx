@@ -11,15 +11,27 @@ export interface Document {
   file_type: string;
   file_size: number;
   uploaded_at: string;
+  chunk_count?: number;
+  status?: string;
 }
 
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
   created_at: string;
-  sources?: Array<{ filename: string; chunk_index: number }>;
+  sources?: Array<{
+    filename: string;
+    original_filename?: string;
+    chunk_index: number;
+    content?: string;
+    vector_score?: number;
+    bm25_score?: number;
+    rerank_score?: number;
+    retrieved_by?: string;
+  }>;
   retrieved_chunks?: number;
   response_time_ms?: number;
+  rag_debug?: any;
 }
 
 export interface Conversation {
@@ -50,6 +62,7 @@ interface ChatContextType {
   loadingHistory: boolean;
   loadingChat: boolean;
   uploading: boolean;
+  pipelineStage: string | null;
   fetchDocuments: () => Promise<void>;
   fetchHistory: () => Promise<void>;
   selectThread: (id: number) => Promise<void>;
@@ -91,10 +104,11 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [pipelineStage, setPipelineStage] = useState<string | null>(null);
 
   // Safe array guards for calculations
   const safeDocs = Array.isArray(documents) ? documents : [];
-  const totalChunks = safeDocs.reduce((sum, doc) => sum + getChunkCount(doc?.original_filename || '', doc?.file_size || 0), 0);
+  const totalChunks = safeDocs.reduce((sum, doc) => sum + (doc?.chunk_count !== undefined && doc?.chunk_count !== null ? doc.chunk_count : getChunkCount(doc?.original_filename || '', doc?.file_size || 0)), 0);
   const totalBytes = safeDocs.reduce((sum, doc) => sum + (doc?.file_size || 0), 0);
   const totalSizeFormatted = formatBytes(totalBytes);
 
@@ -187,10 +201,12 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       const rawMessages = res.data && res.data.messages ? res.data.messages : [];
       const safeMessages = safeExtractArray(rawMessages);
       // Format backend messages to client structure
-      const msgs = safeMessages.map((m: BackendMessage) => ({
+      const msgs = safeMessages.map((m: any) => ({
         role: (m?.role || 'user') as 'user' | 'assistant',
         content: m?.content || '',
         created_at: m?.created_at || new Date().toISOString(),
+        sources: safeExtractArray(m?.sources),
+        rag_debug: m?.rag_debug,
       }));
       setCurrentMessages(msgs);
     } catch (err) {
@@ -220,15 +236,70 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const updatedMessages = [...safePrevMessages, userMsg];
     setCurrentMessages(updatedMessages);
     setLoadingChat(true);
+    setPipelineStage('searching'); // Initial RAG stage
 
     try {
-      const res = await axios.post('/api/chat', {
-        question,
-        conversation_id: activeThreadId,
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question,
+          conversation_id: activeThreadId,
+          stream: true,
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('ReadableStream is not supported by your browser.');
+      }
+
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
+      let finalData: any = null;
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const cleanLine = line.trim();
+          if (cleanLine.startsWith('data: ')) {
+            const rawJson = cleanLine.substring(6);
+            try {
+              const parsed = JSON.parse(rawJson);
+              if (parsed.type === 'status') {
+                setPipelineStage(parsed.stage);
+              } else if (parsed.type === 'final') {
+                finalData = parsed.data;
+              } else if (parsed.type === 'error') {
+                throw new Error(parsed.message);
+              }
+            } catch (err) {
+              console.error('Error parsing line:', err);
+            }
+          }
+        }
+      }
+
+      setPipelineStage(null);
+
+      if (!finalData) {
+        throw new Error('Did not receive a response from the model.');
+      }
+
       // Start typing simulation on the frontend
-      const fullAnswer = res.data?.answer || '';
+      const fullAnswer = finalData.answer || '';
       let typedContent = "";
       const tokens = fullAnswer.match(/[^ ]+ +|[^ ]+/g) || [fullAnswer]; // Split by words keeping trailing space
       let tokenIndex = 0;
@@ -237,9 +308,10 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         role: 'assistant',
         content: '',
         created_at: new Date().toISOString(),
-        sources: safeExtractArray(res.data?.sources),
-        retrieved_chunks: res.data?.retrieved_chunks || 0,
-        response_time_ms: res.data?.response_time_ms || 0,
+        sources: safeExtractArray(finalData.sources),
+        retrieved_chunks: finalData.retrieved_chunks || 0,
+        response_time_ms: finalData.response_time_ms || 0,
+        rag_debug: finalData.rag_debug,
       };
 
       setCurrentMessages([...updatedMessages, assistantMsg]);
@@ -263,8 +335,8 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
           } else {
             clearInterval(typeInterval);
             // Once typing finishes, update active thread and history
-            if (!activeThreadId && res.data?.conversation_id) {
-              setActiveThreadId(res.data.conversation_id);
+            if (!activeThreadId && finalData.conversation_id) {
+              setActiveThreadId(finalData.conversation_id);
               fetchHistory();
             }
             resolve();
@@ -272,14 +344,15 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         }, 22); // 22ms per word makes it stream very smoothly
       });
 
-    } catch (err) {
+    } catch (err: any) {
+      setPipelineStage(null);
       console.error('Error sending message:', err);
       // Append an error indicator message
       setCurrentMessages([
         ...updatedMessages,
         {
           role: 'assistant',
-          content: 'Sorry, I encountered an error while processing your request.',
+          content: err?.message || 'Sorry, I encountered an error while processing your request.',
           created_at: new Date().toISOString(),
         },
       ]);
@@ -373,6 +446,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         loadingHistory,
         loadingChat,
         uploading,
+        pipelineStage,
         fetchDocuments,
         fetchHistory,
         selectThread,

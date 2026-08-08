@@ -50,3 +50,9 @@ class Document(Base):
         default=datetime.utcnow,
         nullable=False,
     )
+
+    status: Mapped[str] = mapped_column(
+        String(20),
+        default="PROCESSING",
+        nullable=False,
+    )

@@ -1,4 +1,5 @@
 import traceback
+from sqlalchemy.orm import Session
 
 from loguru import logger
 
@@ -25,7 +26,8 @@ class IndexingService:
         [12] Indexing completed
     """
 
-    def __init__(self):
+    def __init__(self, db: Session | None = None):
+        self.db = db
         self.chunk_service = ChunkService()
         self.vector_store = VectorStoreService()
 
@@ -91,6 +93,21 @@ class IndexingService:
             f"doc_id={doc_id} filename={filename} text_chars={len(text)}"
         )
         try:
+            from app.config import get_db_settings
+            from app.api.settings import DEFAULTS
+            from sqlalchemy.orm import object_session
+            
+            db = self.db
+            if db is None:
+                db = object_session(document)
+                
+            db_settings = get_db_settings(db)
+            doc_settings = db_settings.get("documents", {}) if db_settings else DEFAULTS.get("documents", {})
+            chunk_size = doc_settings.get("chunk_size", 500)
+            chunk_overlap = doc_settings.get("chunk_overlap", 50)
+            
+            self.chunk_service = ChunkService(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+            
             chunks = self.chunk_service.split_text(
                 text=text,
                 document_id=doc_id,

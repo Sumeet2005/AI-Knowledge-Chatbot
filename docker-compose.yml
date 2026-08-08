@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chatbot-backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:////app/data/knowledge_chatbot.db
+      - CHROMA_DB_PATH=/app/data/chroma_db
+      - UPLOAD_FOLDER=/app/data/uploads
+      - HF_HOME=/app/data/hf_cache
+    volumes:
+      - chatbot_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chatbot-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  chatbot_data:
